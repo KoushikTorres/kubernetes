@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service     #kind of deployment is service
+metadata:
+  name: boxer-service #name of service
+spec:
+  selector:
+    app: boxer-apache  #app name where this service is used for.
+  ports:
+    - protocol: TCP
+      port: 80  #port that service use
+      targetPort: 80 #portnumber of container that has been exposed: port -----> targetport
+      nodePort: 30003  # Exposes this port on each workernode for user to access :   nodeport----->port----->targetprt
+  type: NodePort #type of service we are creating: this service exposes our app to internet access.
+
