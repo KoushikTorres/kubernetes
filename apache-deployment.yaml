@@ -1,0 +1,21 @@
+apiVersion: apps/v1              #api version
+kind: Deployment                 #kind of deployment
+metadata:
+  name: boxer-deployment         #name of the deployment
+  labels:
+    app: boxer-apache            #app name
+spec:
+  replicas: 2                    # number of pod copies to be created across nodes
+  selector:
+    matchLabels:
+      app: boxer-apache        
+  template:                      #template specs
+    metadata:
+      labels:
+        app: boxer-apache
+    spec:                        #secifications of container
+      containers:
+      - name: boxer              #name of container
+        image: koushiktorres/apache2        #container image name that will be pulled and created from ecr or docker hub.
+        ports:
+        - containerPort: 80        # ports that containers should use for the application to expose
