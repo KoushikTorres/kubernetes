@@ -36,3 +36,31 @@ data:                       # data is a key-value dictionary, in here prometheus
 #3 job_name:	Label for each group of targets
 #4 kubernetes_sd_configs:	Use Kubernetes service discovery
 #5 role: node/pod/service	What resource type to look for in cluster
+
+USE THE CODE BELOW
+# prometheus-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+  labels:
+    name: prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+      - job_name: 'kubernetes-nodes'
+        kubernetes_sd_configs:
+          - role: node
+
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+          - role: pod
+
+      - job_name: 'kubernetes-services'
+        kubernetes_sd_configs:
+          - role: service
+
