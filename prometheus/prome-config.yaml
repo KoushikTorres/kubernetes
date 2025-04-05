@@ -1,0 +1,38 @@
+#this is an prometheus configuration file
+apiVersion: v1                       
+kind: ConfigMap        #kind of deployment ConfigMap
+metadata:
+  name: prometheus-config  #naming this deployment
+  namespace: prometheus    #name space where this deployment happens
+  labels:
+    name: prometheus-config #optional but sometimes used in selectors at main deploy file
+data:                       # data is a key-value dictionary, in here prometheus.yaml main file is key and below the "|" will be its contents of main yaml.
+  prometheus.yml: |          # | symbol represents this as an multi line string, global = sets global configurations, scrape_interval = scrape (collect metrics) every 15 seconds from each target.
+    global:                  
+      scrape_interval: 15s
+
+#1. scrape_configs: This defines a list of jobs to scrape.
+#   job_name: Logical name for the job (can be anything descriptive).
+#   kubernetes_sd_configs: Tells Prometheus to use Kubernetes service discovery.
+#   role: node: Prometheus will find all nodes (EC2 instances) in the cluster to scrape metrics from them.
+    scrape_configs:
+      - job_name: 'kubernetes-nodes'
+        kubernetes_sd_configs:
+          - role: node
+#2. This tells Prometheus to dynamically find and scrape all pods in the cluster.
+#   Useful for application-level metrics.
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+          - role: pod
+#3. This config tells Prometheus to find and scrape all Kubernetes services (which are frontends for applications/pods).
+#   Good for tracking service-level health or performance.
+      - job_name: 'kubernetes-services'
+        kubernetes_sd_configs:
+          - role: service
+########  SUMMARY 
+# Section	Purpose
+#! global:	Set how often Prometheus scrapes targets
+#2 scrape_configs:	List of targets Prometheus scrapes
+#3 job_name:	Label for each group of targets
+#4 kubernetes_sd_configs:	Use Kubernetes service discovery
+#5 role: node/pod/service	What resource type to look for in cluster
