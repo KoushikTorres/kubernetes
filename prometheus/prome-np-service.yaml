@@ -1,0 +1,14 @@
+# prometheus-service.yaml
+apiVersion: v1  
+kind: Service                 #kind of deployment is service
+metadata:
+  name: prometheus-service    #name of service
+  namespace: prometheus       #name space to work at
+spec:
+  type: NodePort              #type of service 
+  selector:
+    app: prometheus           #selecting an app to provide service for
+  ports:
+    - port: 9090              #service port receives traffic from nodeport and sends the traffic to container port.
+      targetPort: 9090        #container port 
+      nodePort: 30090         #exposing port for user to access
