@@ -1,0 +1,4 @@
+apiVersion: v1
+kind: Namespace           #kind of deployment
+metadata:
+  name: prometheus  #name of namespace
