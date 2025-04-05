@@ -1,0 +1,32 @@
+# prometheus-deployment.yaml
+apiVersion: apps/v1                #api version
+kind: Deployment                   #kind of deployment
+metadata:
+  name: prometheus-deployment      #naming
+  namespace: prometheus            #choosing the name space
+spec:
+  replicas: 1                      #number of replicas
+  selector:
+    matchLabels:
+      app: prometheus              #Tells the deployment which pods it manages, based on their labels.
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:                          #container specs
+      containers:
+        - name: prometheus
+          image: prom/prometheus:latest   #image to pull for prometheus
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"  #--config.file: Prometheus will use the config file at this path (from our ConfigMap).
+            - "--storage.tsdb.path=/prometheus/"              #--storage.tsdb.path: Location for Prometheus to store metrics data.
+          ports:
+            - containerPort: 9090     #port to use
+          volumeMounts:
+            - name: config-volume     #We mount a volume from the ConfigMap to the container at /etc/prometheus/, so it can read prometheus.yml.
+              mountPath: /etc/prometheus/
+      volumes:
+        - name: config-volume
+          configMap:
+            name: prometheus-config  #This connects the volume mount to the ConfigMap we created earlier.
+                                     #Now /etc/prometheus/prometheus.yml inside the container will come from prometheus-config.
